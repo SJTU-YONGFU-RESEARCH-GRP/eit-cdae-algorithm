@@ -14,79 +14,68 @@ import scipy.io as scio
  
 dataFile = "./data.mat";
 zc = scio.loadmat(dataFile)
-epochs = 1000
+epochs = 600
 
 ############
 ## Option ##
 ############
-options = 1; # 0: sae 1: encoder
+#depth of the network
 encoder_option = 2;
 decoder_option = 2;
 
 #######################################
-if options == 0:
-    input_img = Input(shape=(1,256))
-    #############
-    ## Encoder ##
-    #############
-    encoded = Dense(input_dim=256, output_dim=150, activation='relu')(input_img)
-    encoded = Dense(input_dim=150, output_dim=150, activation='relu')(encoded)
-    decoded = Dense(input_dim=150, output_dim=4096, activation='sigmoid')(encoded)
-    
-    autoencoder = Model(input_img, decoded)
-    autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy')
-if options == 1:
-    input_img = Input(shape=(16,16,1))
-    #############
-    ## Encoder ##
-    #############
-    x = Conv2D(16, (3, 3), activation='relu', padding='same')(input_img)
 
-    if encoder_option == 1:
-        pass;
-    if encoder_option == 2:
-        x = MaxPooling2D((2, 2), padding='same')(x)
-        x = Conv2D(8, (3, 3), activation='relu', padding='same')(x)
-        #x = MaxPooling2D((2, 2), padding='same')(x)
-        #x = Conv2D(8, (3, 3), activation='relu', padding='same')(x)
+input_img = Input(shape=(16,16,1))
+#############
+## Encoder ##
+#############
+x = Conv2D(16, (3, 3), activation='relu', padding='same')(input_img)
 
-    encoded = MaxPooling2D((2, 2), padding='same')(x)
+if encoder_option == 1:
+    pass;
+if encoder_option == 2:
+    x = MaxPooling2D((2, 2), padding='same')(x)
+    x = Conv2D(8, (3, 3), activation='relu', padding='same')(x)
+    #x = MaxPooling2D((2, 2), padding='same')(x)
+    #x = Conv2D(8, (3, 3), activation='relu', padding='same')(x)
 
-    ##################
-    ## Hidden Layer ##
-    ##################
-    # at this point the representation is (2, 2, 8), i.e. 128-dimensional
+encoded = MaxPooling2D((2, 2), padding='same')(x)
 
-    ###################
-    ## Decoder Layer ##
-    ###################
-    if decoder_option == 1:
-        #x = UpSampling2D((2, 2))(encoded)
-        #x = UpSampling2D((2, 2))(x)
-        #x = UpSampling2D((2, 2))(x)
+##################
+## Hidden Layer ##
+##################
+# at this point the representation is (2, 2, 8), i.e. 128-dimensional
 
-        x = Conv2D(16, (3, 3), activation='relu', padding='same')(encoded)
-        x = UpSampling2D((2, 2))(x)
-        x = Conv2D(16, (3, 3), activation='relu', padding='same')(x)
-        x = UpSampling2D((2, 2))(x)
-        x = Conv2D(16, (3, 3), activation='relu', padding='same')(x)
-        x = UpSampling2D((2, 2))(x)
+###################
+## Decoder Layer ##
+###################
+if decoder_option == 1:
+    #x = UpSampling2D((2, 2))(encoded)
+    #x = UpSampling2D((2, 2))(x)
+    #x = UpSampling2D((2, 2))(x)
 
-    if decoder_option == 2:
-        #x = Conv2D(8, (3, 3), activation='relu', padding='same')(encoded)
-        #x = UpSampling2D((2, 2))(x)
-        x = Conv2D(8, (3, 3), activation='relu', padding='same')(x)
-        x = UpSampling2D((2, 2))(x)
-        #x = Conv2D(16, (3, 3), activation='relu', padding='same')(x)
-        #x = UpSampling2D((2, 2))(x)
-        x = Conv2D(16, (3, 3), activation='relu', padding='same')(x)
-        x = UpSampling2D((2, 2))(x)
-        x = Conv2D(16, (3, 3), activation='relu', padding='same')(x)
-        x = UpSampling2D((2, 2))(x)
-    decoded = Conv2D(1, (3, 3), activation='sigmoid',padding='same')(x)
-    autoencoder = Model(input_img, decoded)
-    autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy')
-    # meansquareerror, 
+    x = Conv2D(16, (3, 3), activation='relu', padding='same')(encoded)
+    x = UpSampling2D((2, 2))(x)
+    x = Conv2D(16, (3, 3), activation='relu', padding='same')(x)
+    x = UpSampling2D((2, 2))(x)
+    x = Conv2D(16, (3, 3), activation='relu', padding='same')(x)
+    x = UpSampling2D((2, 2))(x)
+
+if decoder_option == 2:
+    #x = Conv2D(8, (3, 3), activation='relu', padding='same')(encoded)
+    #x = UpSampling2D((2, 2))(x)
+    x = Conv2D(8, (3, 3), activation='relu', padding='same')(x)
+    x = UpSampling2D((2, 2))(x)
+    #x = Conv2D(16, (3, 3), activation='relu', padding='same')(x)
+    #x = UpSampling2D((2, 2))(x)
+    x = Conv2D(16, (3, 3), activation='relu', padding='same')(x)
+    x = UpSampling2D((2, 2))(x)
+    x = Conv2D(16, (3, 3), activation='relu', padding='same')(x)
+    x = UpSampling2D((2, 2))(x)
+decoded = Conv2D(1, (3, 3), activation='sigmoid',padding='same')(x)
+autoencoder = Model(input_img, decoded)
+autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy')
+# meansquareerror, 
 
 # To train it, use the original MNIST digits with shape (samples, 3, 28, 28),
 # and just normalize pixel values between 0 and 1
@@ -106,16 +95,11 @@ y_train = y_train.astype('float32') /255.
 x_test = x_test.astype('float32') / 255.
 y_test = y_test.astype('float32') /255
 
-if options == 0:
-    x_train = np.reshape(x_train, (len(x_train), 1, 256));
-    y_train = np.reshape(y_train, (len(y_train), 1, 4096))
-    x_test = np.reshape(x_test, (len(x_test), 1, 256));
-    y_test = np.reshape(y_test, (len(y_test), 1, 4096))
-if options == 1:
-    x_train = np.reshape(x_train, (len(x_train), 16, 16, 1));
-    y_train = np.reshape(y_train, (len(y_train),64,64,1))
-    x_test = np.reshape(x_test, (len(x_test), 16, 16, 1));
-    y_test = np.reshape(y_test, (len(y_test),64,64,1))
+
+x_train = np.reshape(x_train, (len(x_train), 16, 16, 1));
+y_train = np.reshape(y_train, (len(y_train),64,64,1))
+x_test = np.reshape(x_test, (len(x_test), 16, 16, 1));
+y_test = np.reshape(y_test, (len(y_test),64,64,1))
 
 # open a terminal and start TensorBoard to read logs in the autoencoder subdirectory
 
