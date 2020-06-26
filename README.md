@@ -24,7 +24,7 @@ The architecture of EIT image reconstruction networks, which contains: EIT-CDAE(
 
 There are 2 choices of datasets: using open-source dataset: [montreal dataset](http://eidors3d.sourceforge.net/data_contrib/evaluation-phantom/phantom_evaluation.shtml) of EIDORS or generate simulated dataset. Both need  to use [EIDORS](#eidors3d.sourceforge.net/) toolkit. To generate the dataset, you need run data_gen.m in dataset file. An instance of images processed is as below:
 
-![image](D:\gitproj\eit-cdae-algorithm\pic\data.jpg)
+![image](./pic/data.jpg)
 
 ## Train
 
@@ -52,15 +52,15 @@ code/U-net.py
 
   1. Train and test the CDAE model with constructed database. The reconstructed images are as following:
 
-![](D:\gitproj\eit-cdae-algorithm\pic\databseImage.jpg)
+![](./pic/databseImage.jpg)
 
 ​		2. Testing results of the model with open-source database: Montreal database: 
 
-![](D:\gitproj\eit-cdae-algorithm\pic\cmp.jpg)
+![](./pic/cmp.jpg)
 
 - results of  the matrix denoise model :
 
-![](D:\gitproj\eit-cdae-algorithm\pic\matrixdn.jpg)
+![](./pic/matrixdn.jpg)
 
 ​		(a): Original image; (b) Image with additional noise; (c): Results of the model's output 
 
@@ -68,11 +68,11 @@ code/U-net.py
 
   ​	1. Results of constructed database
 
-![](D:\gitproj\eit-cdae-algorithm\pic\u1.jpg)
+![](./pic/u1.jpg)
 
 ​		2. Results of open-source database
 
-![](D:\gitproj\eit-cdae-algorithm\pic\u2.jpg)
+![](./pic/u2.jpg)
 
 ## Authors
 
